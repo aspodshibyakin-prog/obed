@@ -1,0 +1,22 @@
+name: icons
+on:
+  push:
+    paths: ['tools/make_icons.py', '.github/workflows/icons.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - run: python tools/make_icons.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898099+github-actions[bot]@users.noreply.github.com"
+          git add icons/*.png
+          git diff --cached --quiet || (git commit -m "Иконки" && git push)
